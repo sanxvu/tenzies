@@ -92,3 +92,16 @@ main {
 .bottom-stats {
   margin: 0px;
 }
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+.bestScores {
+  margin: 0px;
+  color: white;
+  font-weight: bold;
+}

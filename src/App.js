@@ -7,10 +7,13 @@ export default function App() {
   const [dice, setDice] = React.useState(allNewDice())
   const [tenzies, setTenzies] = React.useState(false)
   const [rolls, setRolls] = React.useState(0)
+  const [bestRolls, setBestRolls] = React.useState(
+    () => JSON.parse(localStorage.getItem("bestRolls")) || null
+  )
   const [startTime, setStartTime] = React.useState(null)
   const [elapsedTime, setElapsedTime] = React.useState(0)
   const [bestTime, setBestTime] = React.useState(
-    () => JSON.parse(localStorage.getItem("bestTime")) || []
+    () => JSON.parse(localStorage.getItem("bestTime")) || null
   )
 
   // Track elapsed time since clicking the first die which starts timer
@@ -26,13 +29,18 @@ export default function App() {
   // Check if user has won
   React.useEffect(() => {
     if (dice.every(die => die.isHeld && die.value === dice[0].value)) {
-      //save elapsedTime to local storage
-      if (elapsedTime < bestTime) {
+      // Update bestTime and save to local storage
+      if (bestTime === null || elapsedTime < bestTime) {
         setBestTime(elapsedTime)
         localStorage.setItem("bestTime", JSON.stringify(elapsedTime))
       }
+      // Update bestRolls and save to local storage
+      if (bestRolls === null || rolls < bestRolls) {
+        setBestRolls(rolls)
+        localStorage.setItem("bestRolls", JSON.stringify(rolls))
+      }
 
-      //reset states
+      // Reset states
       setTenzies(true)
       setStartTime(null)
     }
@@ -94,19 +102,22 @@ export default function App() {
   ))
 
   return (
-    <main>
-      {tenzies && <Confetti />}
-      <h1 className="title">Tenzies</h1>
-      <p className="instructions">Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
-      <div className="dice-container">
-        {diceElements}
-      </div>
-      <button className="roll-dice" onClick={rollDice}>
-        {tenzies ? "Start New Game" : "Roll"}
-      </button>
-      <p className="bottom-stats">Rolls: {rolls}</p>
-      <p className="bottom-stats">Time: {elapsedTime / 1000} seconds</p>
-      <p className="bottom-stats">Best Time: {bestTime / 1000} seconds</p>
-    </main>
+    <div class="container">
+      <main>
+        {tenzies && <Confetti />}
+        <h1 className="title">Tenzies</h1>
+        <p className="instructions">Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
+        <div className="dice-container">
+          {diceElements}
+        </div>
+        <button className="roll-dice" onClick={rollDice}>
+          {tenzies ? "Start New Game" : "Roll"}
+        </button>
+        <p className="bottom-stats">Rolls: {rolls}</p>
+        <p className="bottom-stats">Time: {elapsedTime / 1000} seconds</p>
+      </main>
+      <p className="bestScores">Best Rolls: {bestRolls === null ? "N/A" : bestRolls}</p>
+      <p className="bestScores">Best Time: {bestTime === null ? "N/A" : bestTime / 1000} seconds</p>
+    </div>
   )
 }
