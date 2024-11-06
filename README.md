@@ -19,19 +19,23 @@ A simple and fun dice game built with React! Roll, hold, and match all dice to w
 ## What I Learned
 Building Tenzies helped me practice key React concepts:
 
-**State Management:** Managed multiple states for the game logic, including dice, tenzies, rolls, and timing.
+- **State Management:** Managed multiple states for the game logic, including dice, tenzies, rolls, and timing.
 
-**Tracking Rolls:** Counted the number of rolls each game to show how efficiently the game was completed.
+- **Tracking Rolls:** Counted the number of rolls each game to show how efficiently the game was completed.
 
-**useEffect:** Used useEffect to:
-- Track game state changes to check for a win.
-- Create a timer that updates each second.
-- Store and retrieve the best time using localStorage.
+- **useEffect:** Used useEffect to:
+    - Track game state changes to check for a win.
+    - Create a timer that updates each second.
+    - Store and retrieve the best time using localStorage.
 
-**Local Storage:** Stored the best rolls and best time in local storage so it displays even after refreshing the page.
+- **Local Storage:** Stored the best rolls and best time in local storage so it displays even after refreshing the page.
 
-**Conditional Rendering:** Showed different buttons and messages depending on the game state.
+- **Conditional Rendering:** Showed different buttons and messages depending on the game state.
 
-**Animations:** Added a confetti effect when the game is won.
+- **Animations:** Added a confetti effect when the game is won.
 
 This project helped me get comfortable with React fundamentals and develop interactive UI skills!
+
+## Screenshot
+
+<img width="560" alt="Screenshot 2024-11-05 at 10 01 36 PM" src="https://github.com/user-attachments/assets/64e07c6b-e252-436f-92fd-908c55d87809">
