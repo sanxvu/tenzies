@@ -7,11 +7,34 @@ export default function App() {
   const [dice, setDice] = React.useState(allNewDice())
   const [tenzies, setTenzies] = React.useState(false)
   const [rolls, setRolls] = React.useState(0)
+  const [startTime, setStartTime] = React.useState(null)
+  const [elapsedTime, setElapsedTime] = React.useState(0)
+  const [bestTime, setBestTime] = React.useState(
+    () => JSON.parse(localStorage.getItem("bestTime")) || []
+  )
 
-  // Check dice array every time ran to see if user has won
+  // Track elapsed time since clicking the first die which starts timer
+  React.useEffect(() => {
+    if (startTime) {
+      const intervalId = setInterval(() => {
+        setElapsedTime(Date.now() - startTime);
+      }, 1000); // Update every second
+      return () => clearInterval(intervalId);
+    }
+  }, [startTime]);
+
+  // Check if user has won
   React.useEffect(() => {
     if (dice.every(die => die.isHeld && die.value === dice[0].value)) {
+      //save elapsedTime to local storage
+      if (elapsedTime < bestTime) {
+        setBestTime(elapsedTime)
+        localStorage.setItem("bestTime", JSON.stringify(elapsedTime))
+      }
+
+      //reset states
       setTenzies(true)
+      setStartTime(null)
     }
   }, dice)
 
@@ -37,8 +60,13 @@ export default function App() {
       setTenzies(false)
       setRolls(0)
       setDice(allNewDice())
+      setStartTime(Date.now())
     }
     else {
+      //start timer if user clicks roll upon entering game
+      if (rolls === 0 && !startTime) {
+        setStartTime(Date.now())
+      }
       //roll dice
       setRolls(prevRolls => prevRolls + 1)
       setDice(oldDice => oldDice.map(die => {
@@ -50,6 +78,10 @@ export default function App() {
   }
 
   function holdDice(id) {
+    //start timer if user clicks die upon entering game
+    if (rolls === 0 && !startTime) {
+      setStartTime(Date.now())
+    }
     setDice(oldDice => oldDice.map(die => {
       return die.id === id ?
         { ...die, isHeld: !die.isHeld } :
@@ -69,8 +101,12 @@ export default function App() {
       <div className="dice-container">
         {diceElements}
       </div>
-      <button className="roll-dice" onClick={rollDice}>{tenzies ? "New Game" : "Roll"}</button>
-      <p className="rolls">Rolls: {rolls}</p>
+      <button className="roll-dice" onClick={rollDice}>
+        {tenzies ? "Start New Game" : "Roll"}
+      </button>
+      <p className="bottom-stats">Rolls: {rolls}</p>
+      <p className="bottom-stats">Time: {elapsedTime / 1000} seconds</p>
+      <p className="bottom-stats">Best Time: {bestTime / 1000} seconds</p>
     </main>
   )
 }
